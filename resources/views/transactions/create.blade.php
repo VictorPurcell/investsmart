@@ -37,9 +37,19 @@
             {{-- Valor --}}
             <div>
                 <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valor</label>
-                <input type="number" step="0.01" min="0" name="amount" id="amount"
-                    class="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    value="{{ old('amount') }}">
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm pointer-events-none">R$</span>
+                    <input
+                        type="text"
+                        name="amount"
+                        id="amount"
+                        inputmode="decimal"
+                        pattern="^\d+(\,\d{1,2})?$"
+                        class="pl-10 w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        placeholder="0,00"
+                        value="{{ old('amount') }}"
+                    >
+                </div>
                 @error('amount') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
 

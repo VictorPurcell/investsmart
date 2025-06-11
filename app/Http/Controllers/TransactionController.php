@@ -30,10 +30,14 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'amount' => str_replace(',', '.', $request->input('amount'))
+        ]);
+
         $data = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'type' => 'required|in:income,expense',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'date' => 'required|date',
             'is_fixed' => 'boolean',
@@ -61,10 +65,14 @@ class TransactionController extends Controller
     {
         $this->authorize('update', $transaction);
 
+        $request->merge([
+            'amount' => str_replace(',', '.', $request->input('amount'))
+        ]);
+
         $data = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'type' => 'required|in:income,expense',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'date' => 'required|date',
             'is_fixed' => 'boolean',
