@@ -2,63 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $transactions = Transaction::where('user_id', Auth::id())
+            ->with('category')
+            ->latest()
+            ->paginate(10);
+
+        return view('transactions.index', compact('transactions'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $categories = Category::where(function ($q) {
+            $q->whereNull('user_id')->orWhere('user_id', Auth::id());
+        })->get();
+
+        return view('transactions.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+            'is_fixed' => 'boolean',
+        ]);
+
+        $data['user_id'] = Auth::id();
+
+        Transaction::create($data);
+
+        return redirect()->route('transactions.index')->with('success', 'Transação cadastrada com sucesso!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Transaction $transaction)
     {
-        //
+        $this->authorize('update', $transaction);
+
+        $categories = Category::where(function ($q) {
+            $q->whereNull('user_id')->orWhere('user_id', Auth::id());
+        })->get();
+
+        return view('transactions.edit', compact('transaction', 'categories'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Transaction $transaction)
     {
-        //
+        $this->authorize('update', $transaction);
+
+        $data = $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+            'is_fixed' => 'boolean',
+        ]);
+
+        $transaction->update($data);
+
+        return redirect()->route('transactions.index')->with('success', 'Transação atualizada!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Transaction $transaction)
     {
-        //
-    }
+        $this->authorize('delete', $transaction);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')->with('success', 'Transação removida.');
     }
 }
