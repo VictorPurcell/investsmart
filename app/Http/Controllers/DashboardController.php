@@ -8,6 +8,7 @@ use App\Models\Goal;
 use App\Models\Alert;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
@@ -30,7 +31,22 @@ class DashboardController extends Controller
             ->map(function ($group) {
                 return $group->sum('amount');
             });
-
+            
+        $historicoMensal = Transaction::where('user_id', $user->id)
+            ->whereBetween('date', [
+                now()->copy()->subMonths(5)->startOfMonth(),
+                now()->endOfMonth()
+            ])
+            ->get()
+            ->groupBy(function ($t) {
+                return \Carbon\Carbon::parse($t->date)->format('m/Y');
+            })
+            ->map(function (Collection $transacoesMes) {
+                return [
+                    'income' => $transacoesMes->where('type', 'income')->sum('amount'),
+                    'expense' => $transacoesMes->where('type', 'expense')->sum('amount'),
+                ];
+            });
 
         $goal = Goal::where('user_id', $user->id)
             ->where('month', $month)
@@ -47,7 +63,8 @@ class DashboardController extends Controller
 
         return view('dashboard.index', compact(
             'month', 'year', 'transactions', 'goal', 'alerts',
-            'income', 'expenses', 'balance', 'expensesByCategory'
+            'income', 'expenses', 'balance', 'expensesByCategory',
+            'historicoMensal'
         ));
     }
 }

@@ -62,13 +62,21 @@
             <h3 class="text-lg font-semibold mb-4">Transações Recentes ({{ str_pad($month, 2, '0', STR_PAD_LEFT) }}/{{ $year }})</h3>
 
             @if($expensesByCategory->isNotEmpty())
-              <div class="bg-white shadow rounded p-6">
-                  <h3 class="text-lg font-semibold mb-4">Gastos por Categoria</h3>
-                  <canvas id="gastosCategoriaChart" height="200"></canvas>
-              </div>
-          @endif
+                <div class="bg-white shadow rounded p-6">
+                    <h3 class="text-lg font-semibold mb-4">Gastos por Categoria</h3>
+                    <canvas id="gastosCategoriaChart" height="200"></canvas>
+                </div>
+            @endif
+
+            @if($historicoMensal->isNotEmpty())
+                <div class="bg-white shadow rounded p-6">
+                    <h3 class="text-lg font-semibold mb-4">Evolução Mensal (últimos 6 meses)</h3>
+                    <canvas id="evolucaoMensalChart" height="200"></canvas>
+                </div>
+            @endif
 
             @if($transactions->isEmpty())
+
                 <p class="text-gray-500 text-sm">Nenhuma transação registrada para este mês.</p>
             @else
                 <table class="min-w-full text-sm text-left border">
@@ -128,3 +136,42 @@
         });
     </script>
 @endif
+
+@if($historicoMensal->isNotEmpty())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctxBar = document.getElementById('evolucaoMensalChart').getContext('2d');
+
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($historicoMensal->keys()) !!},
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            backgroundColor: '#4ade80',
+                            data: {!! json_encode($historicoMensal->pluck('income')->values()) !!}
+                        },
+                        {
+                            label: 'Despesas',
+                            backgroundColor: '#f87171',
+                            data: {!! json_encode($historicoMensal->pluck('expense')->values()) !!}
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        });
+    </script>
+@endif
+
