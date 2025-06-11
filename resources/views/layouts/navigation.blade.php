@@ -13,8 +13,26 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        Dashboard
                     </x-nav-link>
+
+                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                        Transações
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                        Categorias
+                    </x-nav-link>
+
+                    {{-- Futuro: metas --}}
+                    {{-- <x-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">
+                        Metas
+                    </x-nav-link> --}}
+
+                    {{-- Futuro: alertas --}}
+                    {{-- <x-nav-link :href="route('alerts.index')" :active="request()->routeIs('alerts.*')">
+                        Alertas
+                    </x-nav-link> --}}
                 </div>
             </div>
 
@@ -68,8 +86,25 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                Dashboard
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                Transações
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                Categorias
+            </x-responsive-nav-link>
+
+            {{-- Futuro --}}
+            {{-- <x-responsive-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">
+                Metas
+            </x-responsive-nav-link> --}}
+
+            {{-- <x-responsive-nav-link :href="route('alerts.index')" :active="request()->routeIs('alerts.*')">
+                Alertas
+            </x-responsive-nav-link> --}}
         </div>
 
         <!-- Responsive Settings Options -->
