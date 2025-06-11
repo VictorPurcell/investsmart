@@ -61,6 +61,13 @@
         <div class="bg-white shadow rounded p-6">
             <h3 class="text-lg font-semibold mb-4">Transações Recentes ({{ str_pad($month, 2, '0', STR_PAD_LEFT) }}/{{ $year }})</h3>
 
+            @if($expensesByCategory->isNotEmpty())
+              <div class="bg-white shadow rounded p-6">
+                  <h3 class="text-lg font-semibold mb-4">Gastos por Categoria</h3>
+                  <canvas id="gastosCategoriaChart" height="200"></canvas>
+              </div>
+          @endif
+
             @if($transactions->isEmpty())
                 <p class="text-gray-500 text-sm">Nenhuma transação registrada para este mês.</p>
             @else
@@ -92,3 +99,32 @@
         </div>
     </div>
 </x-app-layout>
+
+@if($expensesByCategory->isNotEmpty())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('gastosCategoriaChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($expensesByCategory->keys()) !!},
+                    datasets: [{
+                        data: {!! json_encode($expensesByCategory->values()) !!},
+                        backgroundColor: [
+                            '#f87171', '#fb923c', '#facc15',
+                            '#4ade80', '#60a5fa', '#a78bfa', '#f472b6'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        });
+    </script>
+@endif

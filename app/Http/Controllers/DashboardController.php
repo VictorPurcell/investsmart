@@ -24,6 +24,14 @@ class DashboardController extends Controller
             ->whereYear('date', $year)
             ->get();
 
+        $expensesByCategory = $transactions
+            ->where('type', 'expense')
+            ->groupBy('category.name')
+            ->map(function ($group) {
+                return $group->sum('amount');
+            });
+
+
         $goal = Goal::where('user_id', $user->id)
             ->where('month', $month)
             ->where('year', $year)
@@ -38,7 +46,8 @@ class DashboardController extends Controller
         $balance = $income - $expenses;
 
         return view('dashboard.index', compact(
-            'month', 'year', 'transactions', 'goal', 'alerts', 'income', 'expenses', 'balance'
+            'month', 'year', 'transactions', 'goal', 'alerts',
+            'income', 'expenses', 'balance', 'expensesByCategory'
         ));
     }
 }
