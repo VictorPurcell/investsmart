@@ -10,7 +10,11 @@ class Category extends Model
     use HasFactory;
 
 
-
+    protected $fillable = [
+        'name',
+        'is_global',
+        'user_id',
+    ];
 
 
     public function user()

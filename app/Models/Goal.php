@@ -9,6 +9,15 @@ class Goal extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'month',
+        'year',
+        'target_amount',
+        'achieved',
+    ];
+
+
 
     public function user()
     {

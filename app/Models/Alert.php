@@ -9,6 +9,12 @@ class Alert extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'type',
+        'message',
+        'read',
+    ];
 
     public function user()
     {
