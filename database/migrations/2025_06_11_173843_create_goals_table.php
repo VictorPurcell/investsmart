@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('target_amount', 10, 2);
-            $table->date('month'); // metas mensais
+            $table->integer('month');
+            $table->integer('year');
             $table->boolean('achieved')->default(false);
             $table->timestamps();
         });

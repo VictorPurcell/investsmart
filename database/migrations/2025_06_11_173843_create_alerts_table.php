@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('alerts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->text('message');
+            $table->string('message');
+            $table->enum('type', ['budget_exceeded', 'suggestion']);
             $table->boolean('read')->default(false);
             $table->timestamps();
         });
