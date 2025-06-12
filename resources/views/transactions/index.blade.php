@@ -12,9 +12,13 @@
             </div>
         @endif
 
-        <div class="mb-4 text-right">
+        <div class="mb-4 flex justify-end space-x-2">
             <a href="{{ route('transactions.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Nova Transação
+            </a>
+
+            <a href="{{ route('transactions.export') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                📤 Exportar CSV
             </a>
         </div>
 
